@@ -83,4 +83,10 @@ public class PessoaResource {
 		
 		pessoaService.atualizaStatusAtivo(codigo, ativo);
 	}
+	
+	@GetMapping("/status-ativo")
+	public List<Pessoas> listarPessoasAtivas() {
+		
+		return pessoaRepository.FindByStatusAtivo();
+	}
 }

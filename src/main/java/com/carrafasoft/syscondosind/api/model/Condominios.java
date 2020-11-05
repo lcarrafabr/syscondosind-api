@@ -49,6 +49,7 @@ public class Condominios {
 
 	@Embedded
 	private EnderecoCondominios enderecoCondominio;
+	
 
 	public Long getCondominioId() {
 		return condominioId;

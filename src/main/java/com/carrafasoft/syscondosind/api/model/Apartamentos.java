@@ -15,6 +15,7 @@ public class Apartamentos {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "apartamento_id")
 	private Long apartamentoId;
 
 	@NotNull

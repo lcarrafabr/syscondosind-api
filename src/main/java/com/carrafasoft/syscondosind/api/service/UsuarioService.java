@@ -23,10 +23,19 @@ public class UsuarioService {
 		return usuariosRepository.save(usuarioSalvo);
 	}
 	
+	public void atualizaStatusAtivo(Long codigo, Boolean ativo) {
+		
+		UsuarioSistema usuarioSalvo = buscaPorId(codigo);
+		usuarioSalvo.setStatus(ativo);
+		usuariosRepository.save(usuarioSalvo);
+	}
+	
 	private UsuarioSistema buscaPorId(Long codigo) {
 		
 		UsuarioSistema usuarioSalvo = usuariosRepository.findById(codigo).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return usuarioSalvo;
 	}
+	
+	
 
 }

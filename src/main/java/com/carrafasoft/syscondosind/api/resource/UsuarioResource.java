@@ -77,5 +77,12 @@ public class UsuarioResource {
 		UsuarioSistema usuarioSalvo = usuarioService.atualizaUsuario(codigo, usuario);
 		return ResponseEntity.ok(usuarioSalvo);
 	}
+	
+	@PutMapping("/{codigo}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void atualizaUsuarioAtivo(@PathVariable Long codigo, @RequestBody Boolean ativo) {
+		
+		usuarioService.atualizaStatusAtivo(codigo, ativo);
+	}
 
 }

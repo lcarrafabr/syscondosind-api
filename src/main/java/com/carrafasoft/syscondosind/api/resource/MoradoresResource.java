@@ -72,5 +72,11 @@ public class MoradoresResource {
 		Moradores moradorSalvo = moradorService.atualizaMorador(codigo, morador);
 		return ResponseEntity.ok(moradorSalvo);
 	}
+	
+	@GetMapping("/moradores-ativos")
+	public List<Moradores> listarMoradorPessoaAtiva() {
+		
+		return moradorRepository.findMoradorPessoaAtiva();
+	}
 
 }

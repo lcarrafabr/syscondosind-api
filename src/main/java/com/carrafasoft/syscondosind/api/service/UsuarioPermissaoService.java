@@ -24,11 +24,9 @@ public class UsuarioPermissaoService {
 	
 	private UsuarioPermissao buscaPorId(Long codigo) {
 		
-		System.out.println("Codigo dentro do buscar pelo codigo: " + codigo);
+		//UsuarioPermissao userPermitSalvo = usuarioPermissaoRepository.findById(codigo).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		
-		System.out.println(usuarioPermissaoRepository.findById(codigo).orElseThrow(() -> new EmptyResultDataAccessException(1)));
-		
-		UsuarioPermissao userPermitSalvo = usuarioPermissaoRepository.findById(codigo).orElseThrow(() -> new EmptyResultDataAccessException(1));
+		UsuarioPermissao userPermitSalvo = (UsuarioPermissao) usuarioPermissaoRepository.buscaUsuarioPermissaoPorId(codigo);
 		return userPermitSalvo;
 	}
 

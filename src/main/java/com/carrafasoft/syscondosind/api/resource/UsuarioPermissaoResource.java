@@ -68,13 +68,13 @@ public class UsuarioPermissaoResource {
 	
 	/***NÃO FUNCIOANDO AINDA. DESCOBRIR O ERRO**/
 	
-//	@PutMapping("/{codigo}")
-//	public ResponseEntity<UsuarioPermissao> atualizaPermissao(@PathVariable Long codigo, @RequestBody UsuarioPermissao userPermit) {
-//		
-//		UsuarioPermissao userPermitSalvo = usuarioPermissaoService.atualizausuarioPermissao(codigo, userPermit);
-//		
-//		return ResponseEntity.ok(userPermitSalvo);
-//	}
+	@PutMapping("/{codigo}")
+	public ResponseEntity<UsuarioPermissao> atualizaPermissao(@PathVariable Long codigo, @RequestBody UsuarioPermissao userPermit) {
+		
+		UsuarioPermissao userPermitSalvo = usuarioPermissaoService.atualizausuarioPermissao(codigo, userPermit);
+		
+		return ResponseEntity.ok(userPermitSalvo);
+	}
 	
 	/*******************************************************************************************************************************************************************/
 	

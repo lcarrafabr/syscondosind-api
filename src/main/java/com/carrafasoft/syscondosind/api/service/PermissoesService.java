@@ -16,6 +16,8 @@ public class PermissoesService {
 	
 	public Permissoes atualizaPermissao(Long codigo, Permissoes permissao) {
 		
+		permissao.setPermissao(permissao.getPermissao().toUpperCase());
+		
 		Permissoes permissaoSalva = buscaPorId(codigo);
 		
 		BeanUtils.copyProperties(permissao, permissaoSalva, "permissaoId");

@@ -35,5 +35,7 @@ public class PessoaService {
 		Pessoas pessoaSalva = pessoaRepository.findById(codigo).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return pessoaSalva;
 	}
+	
+	
 
 }

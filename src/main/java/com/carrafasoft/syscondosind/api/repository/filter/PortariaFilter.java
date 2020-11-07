@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-public class PortariasFilter {
+public class PortariaFilter {
 	
 	private String nomeVisitante;
 	

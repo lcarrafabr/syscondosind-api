@@ -22,7 +22,7 @@ import com.carrafasoft.syscondosind.api.enums.TipoVisita;
 
 @Entity
 @Table(name = "portaria")
-public class Portarias {
+public class Portaria {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -191,7 +191,7 @@ public class Portarias {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Portarias other = (Portarias) obj;
+		Portaria other = (Portaria) obj;
 		if (controlePortariaId == null) {
 			if (other.controlePortariaId != null)
 				return false;

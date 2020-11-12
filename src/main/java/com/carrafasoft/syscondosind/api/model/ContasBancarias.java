@@ -36,6 +36,10 @@ public class ContasBancarias {
 	private String numeroConta;
 
 	@NotNull
+	@Column(length = 20)
+	private String agencia;
+
+	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(name = "tipo_conta", length = 45)
 	private TipoConta tipoConta;
@@ -144,6 +148,14 @@ public class ContasBancarias {
 
 	public void setBanco(Bancos banco) {
 		this.banco = banco;
+	}
+
+	public String getAgencia() {
+		return agencia;
+	}
+
+	public void setAgencia(String agencia) {
+		this.agencia = agencia;
 	}
 
 	@Override

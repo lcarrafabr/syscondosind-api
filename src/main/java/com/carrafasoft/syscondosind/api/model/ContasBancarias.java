@@ -55,10 +55,16 @@ public class ContasBancarias {
 	@Column(columnDefinition = "TEXT")
 	private String descricao;
 
+	@NotNull
 	@JsonIgnoreProperties("enderecoCondominio")
 	@ManyToOne
 	@JoinColumn(name = "condominio_id")
 	private Condominios condominio;
+
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "banco_id")
+	private Bancos banco;
 
 	public Long getContaBancariaId() {
 		return contaBancariaId;
@@ -130,6 +136,14 @@ public class ContasBancarias {
 
 	public void setCondominio(Condominios condominio) {
 		this.condominio = condominio;
+	}
+
+	public Bancos getBanco() {
+		return banco;
+	}
+
+	public void setBanco(Bancos banco) {
+		this.banco = banco;
 	}
 
 	@Override

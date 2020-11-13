@@ -19,6 +19,7 @@ import com.carrafasoft.syscondosind.api.event.RecursoCriadoEvent;
 import com.carrafasoft.syscondosind.api.model.Lancamentos;
 import com.carrafasoft.syscondosind.api.repository.LancamentosRepository;
 import com.carrafasoft.syscondosind.api.service.LancamentosService;
+import com.carrafasoft.syscondosind.api.utils.FuncoesUtils;
 
 @RestController
 @RequestMapping("/lancamentos")
@@ -43,21 +44,38 @@ public class LancamentosResource {
 		
 		Lancamentos lancamentoSalvo = new Lancamentos();
 		
+		String chavePesquisa = FuncoesUtils.gerarHash();
+		
+		List<Lancamentos> verificaLanc = lancamentosRepository.buscarPorchave(chavePesquisa);
+		
+		 while(!verificaLanc.isEmpty()) {
+			 
+			 chavePesquisa = FuncoesUtils.gerarHash();
+			 verificaLanc = lancamentosRepository.buscarPorchave(chavePesquisa);
+		 }
+		
+		
+		
+		FuncoesUtils.gerarHash();
+		
 		if(lancamento.getParcelado().equals(true)) {
 			
 			//lancamentoSalvo = lancamentoService.cadastrarLancamentosParcelado(lancamento, response);
 			
-			List<Lancamentos> lista = lancamentoService.cadastrarLancamentosParcelado(lancamento, response);
+			lancamentoSalvo = lancamentoService.cadastrarLancamentosParcelado(lancamento, response, chavePesquisa);
+			publisher.publishEvent(new RecursoCriadoEvent(this, response, lancamentoSalvo.getLancamentoId()));
 			
 			//lancamentosRepository.saveAll(lista);
 		
 		}else {
 			
+			lancamento.setChavePesquisa(chavePesquisa);
 			lancamentoSalvo = lancamentosRepository.save(lancamento);
 			publisher.publishEvent(new RecursoCriadoEvent(this, response, lancamentoSalvo.getLancamentoId()));
 		}
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(lancamentoSalvo);
+		//return null;
 	}
 
 }

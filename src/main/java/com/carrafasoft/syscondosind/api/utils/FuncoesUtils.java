@@ -2,6 +2,7 @@ package com.carrafasoft.syscondosind.api.utils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 public class FuncoesUtils {
 	
@@ -17,6 +18,21 @@ public class FuncoesUtils {
 		LocalDateTime dateTime = LocalDateTime.parse(data, formatter);
 		
 		return dateTime;
+	}
+	
+	
+	/**
+	 * Gera um sequencia de caracteres com 20 digitos aleatoriamente;
+	 * 
+	 @param LocalDate data
+	 * @return 
+	  **/
+	public static String gerarHash() {
+		
+		UUID uuid = UUID.randomUUID();
+		String myRandom = uuid.toString();
+		//System.out.println(myRandom.substring(0,20));
+		return myRandom.substring(0,20);
 	}
 
 }

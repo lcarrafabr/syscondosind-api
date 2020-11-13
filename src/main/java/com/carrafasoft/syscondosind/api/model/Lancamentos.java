@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -51,7 +52,6 @@ public class Lancamentos {
 	@Column(length = 100)
 	private String descricao;
 
-	@NotNull
 	@Column(length = 20)
 	@Enumerated(EnumType.STRING)
 	private StatusSituacao situacao;
@@ -65,6 +65,9 @@ public class Lancamentos {
 	@NotNull
 	@Column(name = "numero_parcela")
 	private Integer numeroParcela;
+
+	@Column(name = "chave_pesquisa", length = 20, updatable = false)
+	private String chavePesquisa;
 
 	@NotNull
 	@Column(name = "forma_pagamento", length = 20)
@@ -196,6 +199,20 @@ public class Lancamentos {
 
 	public void setCategoriaConta(CategoriasContaPR categoriaConta) {
 		this.categoriaConta = categoriaConta;
+	}
+
+	@PrePersist
+	public void aoCadastrar() {
+
+		situacao = StatusSituacao.PENDENTE;
+	}
+
+	public String getChavePesquisa() {
+		return chavePesquisa;
+	}
+
+	public void setChavePesquisa(String chavePesquisa) {
+		this.chavePesquisa = chavePesquisa;
 	}
 
 	@Override

@@ -55,9 +55,6 @@ public class LancamentosResource {
 		 }
 		
 		
-		
-		FuncoesUtils.gerarHash();
-		
 		if(lancamento.getParcelado().equals(true)) {
 			
 			//lancamentoSalvo = lancamentoService.cadastrarLancamentosParcelado(lancamento, response);

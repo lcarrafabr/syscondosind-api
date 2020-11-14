@@ -6,6 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.carrafasoft.syscondosind.api.model.ListaConvidados;
+import com.carrafasoft.syscondosind.api.model.ListaConvidadosPessoas;
 import com.carrafasoft.syscondosind.api.repository.ListaConvidadosRepository;
 
 @Service

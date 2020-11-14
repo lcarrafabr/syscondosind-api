@@ -1,5 +1,6 @@
 package com.carrafasoft.syscondosind.api.resource;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,6 +116,27 @@ public class LancamentosResource {
 		Lancamentos lancSalvo = lancamentoService.atualizaLancamento(codigo, lancamento);
 		
 		return ResponseEntity.ok(lancSalvo);
+	}
+	
+	/******************************************************************************************************************************************/
+	
+	@GetMapping("lancamentos-a-pagar-por-periodo")
+	public BigDecimal buscaValoresAPagarPorData(@RequestParam("dataVenvimentoDe") String dataVencimentoDe, @RequestParam("dataVencimentoAte") String dataVencimentoAte) {
+		
+		return lancamentosRepository.buscaValoresAPagarPorData(
+				FuncoesUtils.converterStringParaLocalDate(dataVencimentoDe), 
+				FuncoesUtils.converterStringParaLocalDate(dataVencimentoAte)
+				);
+	}
+	
+	
+	@GetMapping("lancamentos-a-receber-por-periodo")
+	public BigDecimal buscaValoresAReceberPorData(@RequestParam("dataVenvimentoDe") String dataVencimentoDe, @RequestParam("dataVencimentoAte") String dataVencimentoAte) {
+		
+		return lancamentosRepository.buscaValoresAReceberrPorData(
+				FuncoesUtils.converterStringParaLocalDate(dataVencimentoDe), 
+				FuncoesUtils.converterStringParaLocalDate(dataVencimentoAte)
+				);
 	}
 
 }

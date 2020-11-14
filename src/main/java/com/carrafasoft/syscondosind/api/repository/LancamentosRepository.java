@@ -1,5 +1,7 @@
 package com.carrafasoft.syscondosind.api.repository;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -24,6 +26,22 @@ public interface LancamentosRepository extends JpaRepository<Lancamentos, Long>{
 	@Query(nativeQuery = true,
 	value = "delete from lancamentos where chave_pesquisa = :chave ")
 	public void deletaLancPorChave(String chave);
+	
+	
+	@Query(nativeQuery = true,
+			value = "select sum(valor)  as 'Valor_a_pagar' from lancamentos "
+					+ "where data_vencimento between :dataVencimentoDe and :dataVencimentoAte "
+					+ "and tipo_natureza = 'A_PAGAR' "
+					+ "and situacao <> 'PAGO' ")
+	public BigDecimal buscaValoresAPagarPorData(LocalDate dataVencimentoDe, LocalDate dataVencimentoAte);
+	
+	
+	@Query(nativeQuery = true,
+			value = "select sum(valor)  as 'Valor_a_pagar' from lancamentos "
+					+ "where data_vencimento between :dataVencimentoDe and :dataVencimentoAte "
+					+ "and tipo_natureza = 'RECEBER' "
+					+ "and situacao <> 'PAGO' ")
+	public BigDecimal buscaValoresAReceberrPorData(LocalDate dataVencimentoDe, LocalDate dataVencimentoAte);
 	
 
 

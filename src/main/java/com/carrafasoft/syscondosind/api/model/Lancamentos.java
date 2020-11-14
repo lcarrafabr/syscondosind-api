@@ -14,14 +14,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.carrafasoft.syscondosind.api.enums.FormaPagamento;
 import com.carrafasoft.syscondosind.api.enums.StatusSituacao;
 import com.carrafasoft.syscondosind.api.enums.TipoNatureza;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "lancamentos")
@@ -214,6 +212,8 @@ public class Lancamentos {
 	public void setChavePesquisa(String chavePesquisa) {
 		this.chavePesquisa = chavePesquisa;
 	}
+	
+	
 
 	@Override
 	public int hashCode() {

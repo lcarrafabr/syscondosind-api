@@ -2,6 +2,7 @@ package com.carrafasoft.syscondosind.api.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.carrafasoft.syscondosind.api.model.Lancamentos;
 import com.carrafasoft.syscondosind.api.repository.LancamentosRepository;
+import com.carrafasoft.syscondosind.api.utils.FuncoesUtils;
 
 @Service
 public class LancamentosService {
@@ -111,6 +113,25 @@ public class LancamentosService {
 		BeanUtils.copyProperties(lancamento, lancSalvo, "lancamentoId");
 		
 		return lancamentosRepository.save(lancSalvo);
+	}
+	
+	
+	public void cadastrarLancamentoQuandoAlugarAreaComum(Lancamentos lancamento) {
+		
+		String chavePesquisa = FuncoesUtils.gerarHash();
+		
+		List<Lancamentos> verificaLanc = lancamentosRepository.buscarPorchave(chavePesquisa);
+		
+		 while(!verificaLanc.isEmpty()) {
+			 
+			 chavePesquisa = FuncoesUtils.gerarHash();
+			 verificaLanc = lancamentosRepository.buscarPorchave(chavePesquisa);
+		 }
+		 
+		 lancamento.setChavePesquisa(chavePesquisa);
+		
+		lancamentosRepository.save(lancamento);
+		
 	}
 	
 	

@@ -1,6 +1,7 @@
 package com.carrafasoft.syscondosind.api.model;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -127,7 +128,7 @@ public class Pessoas {
 	@PrePersist
 	public void aoCadastrarPessoa() {
 		
-		dataCadastro = LocalDate.now();
+		dataCadastro = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
 	}
 
 }

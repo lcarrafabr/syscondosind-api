@@ -50,33 +50,42 @@ public class AgendamentoAreaComumResource {
 	public ResponseEntity<AgendamentoAreaComum> cadastrarAreaComum(@Valid @RequestBody AgendamentoAreaComum agendamento, HttpServletResponse response) {
 		
 		AgendamentoAreaComum agendamentoSalvo= new AgendamentoAreaComum();
+		ResponseEntity<AgendamentoAreaComum> httpStatus = new ResponseEntity<AgendamentoAreaComum>(HttpStatus.BAD_REQUEST);
 		
 		AreasComuns areaComumSalva = AreasComunsRepository.findById(agendamento.getAreaComum().getAreaComumId()).orElseThrow(() -> new EmptyResultDataAccessException(1));		
 		BigDecimal valorAreaComum = areaComumSalva.getValorLocacao(); 
 		
-		if( valorAreaComum.compareTo(BigDecimal.ZERO) > 0) {
+		if(agendamentoService.verificaDataDisponivel(agendamento) == true) {
 			
-			
-			if(areaComumSalva.getContaBancaria().getContaBancariaId() > 0 
-					&& areaComumSalva.getCategoriaContas().getCategoriaContaId() > 0
-					&& areaComumSalva.getCentroCusto().getCentroCustoId() > 0) {
+		System.out.println("Passei");
+		
+			if( valorAreaComum.compareTo(BigDecimal.ZERO) > 0) {
 				
-				agendamentoSalvo = agendamentoService.cadastraAgendamentoECriaLancamento(agendamento, valorAreaComum, areaComumSalva);
 				
-			}else {
+				if(areaComumSalva.getContaBancaria().getContaBancariaId() > 0 
+						&& areaComumSalva.getCategoriaContas().getCategoriaContaId() > 0
+						&& areaComumSalva.getCentroCusto().getCentroCustoId() > 0) { 
+					
+					agendamentoSalvo = agendamentoService.cadastraAgendamentoECriaLancamento(agendamento, valorAreaComum, areaComumSalva);
+					
+				} else {
+					
+					httpStatus = ResponseEntity.badRequest().build();
+				}
 				
-				return ResponseEntity.badRequest().build();
+			} else {
+				
+				agendamentoSalvo = agendamentoAreaComumRepository.save(agendamento);
 			}
 			
+			publisher.publishEvent(new RecursoCriadoEvent(this, response, agendamentoSalvo.getAgendamentoAreaComumId()));
+			httpStatus = ResponseEntity.status(HttpStatus.CREATED).body(agendamentoSalvo);
+		
 		} else {
-			
-			agendamentoSalvo = agendamentoAreaComumRepository.save(agendamento);
+			httpStatus = ResponseEntity.badRequest().build();
 		}
 		
-		publisher.publishEvent(new RecursoCriadoEvent(this, response, agendamentoSalvo.getAgendamentoAreaComumId()));
-		
-		
-		return ResponseEntity.status(HttpStatus.CREATED).body(agendamentoSalvo);
+		return httpStatus;
 	}
 
 }

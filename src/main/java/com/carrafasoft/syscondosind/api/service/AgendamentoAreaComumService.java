@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -63,6 +64,25 @@ public class AgendamentoAreaComumService {
 		
 	}
 	
+		public Boolean verificaDataDisponivel(AgendamentoAreaComum agendamento) {
+		
+			Boolean retorno = false;
+			
+			LocalDateTime dataInicio = agendamento.getDataInicioAgendamento(); 
+			LocalDateTime dataFim = agendamento.getDataFimAgendamento();
+			
+			LocalDateTime verificaDataInicio = agendamentoAreaComumRepository.buscaDataInicioLivre(dataInicio);
+			LocalDateTime verificaDataFim = agendamentoAreaComumRepository.buscaDataFimLivre(dataFim);
+		
+			if(verificaDataInicio == null && verificaDataFim == null) {
+				
+				System.out.println("Verifica Data inicio: " + verificaDataInicio);
+				retorno = true;
+			}
+		
+		return retorno;
+	}
+	
 	private AgendamentoAreaComum buscaPorId(Long codigo, AgendamentoAreaComum agendamento) {
 		
 		AgendamentoAreaComum agendamentoSalvo = agendamentoAreaComumRepository.findById(codigo).orElseThrow(() -> new EmptyResultDataAccessException(1));
@@ -79,5 +99,6 @@ public class AgendamentoAreaComumService {
 		
 		return dataVenc;
 	}
+
 
 }

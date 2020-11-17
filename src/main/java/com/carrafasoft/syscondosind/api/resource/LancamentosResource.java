@@ -64,8 +64,6 @@ public class LancamentosResource {
 		
 		if(lancamento.getParcelado().equals(true)) {
 			
-			//lancamentoSalvo = lancamentoService.cadastrarLancamentosParcelado(lancamento, response);
-			
 			lancamentoSalvo = lancamentoService.cadastrarLancamentosParcelado(lancamento, response, chavePesquisa);
 			publisher.publishEvent(new RecursoCriadoEvent(this, response, lancamentoSalvo.getLancamentoId()));
 			

@@ -70,9 +70,10 @@ public class AgendamentoAreaComumService {
 			
 			LocalDateTime dataInicio = agendamento.getDataInicioAgendamento(); 
 			LocalDateTime dataFim = agendamento.getDataFimAgendamento();
+			Long codigoAreaComum = agendamento.getAreaComum().getAreaComumId();
 			
-			LocalDateTime verificaDataInicio = agendamentoAreaComumRepository.buscaDataInicioLivre(dataInicio);
-			LocalDateTime verificaDataFim = agendamentoAreaComumRepository.buscaDataFimLivre(dataFim);
+			LocalDateTime verificaDataInicio = agendamentoAreaComumRepository.buscaDataInicioLivre(dataInicio, codigoAreaComum);
+			LocalDateTime verificaDataFim = agendamentoAreaComumRepository.buscaDataFimLivre(dataFim, codigoAreaComum);
 		
 			if(verificaDataInicio == null && verificaDataFim == null) {
 				

@@ -7,11 +7,14 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.carrafasoft.syscondosind.api.enums.FormaPagamento;
+import com.carrafasoft.syscondosind.api.enums.StatusAgendamento;
 import com.carrafasoft.syscondosind.api.enums.StatusSituacao;
 import com.carrafasoft.syscondosind.api.enums.TipoNatureza;
 import com.carrafasoft.syscondosind.api.model.AgendamentoAreaComum;
@@ -50,9 +53,9 @@ public class AgendamentoAreaComumService {
 	private Lancamentos cadastrarLancamentoQuandoAlugarAreaComum(BigDecimal valorAluguel, AgendamentoAreaComum agendamento, AreasComuns areaComumSalva) {
 		
 		Lancamentos lancNovo = new Lancamentos();
-		String descricao = "Lançamento da locação da Area comum: " + agendamento.getTituloAgendamento().trim().toUpperCase();
+		String descricao = "Locação da área comum: " + agendamento.getTituloAgendamento().trim().toUpperCase();
 		
-		lancNovo.setTipoNatureza(TipoNatureza.A_PAGAR);
+		lancNovo.setTipoNatureza(TipoNatureza.RECEBER);
 		lancNovo.setValor(valorAluguel);
 		lancNovo.setDataVencimento(criarDataLancamento(agendamento.getDataInicioAgendamento()));
 		lancNovo.setDataPagamento(null);
@@ -83,10 +86,9 @@ public class AgendamentoAreaComumService {
 			
 			LocalDateTime verificaDataInicio = agendamentoAreaComumRepository.buscaDataInicioLivre(dataInicio, codigoAreaComum);
 			LocalDateTime verificaDataFim = agendamentoAreaComumRepository.buscaDataFimLivre(dataFim, codigoAreaComum);
-		
+			
 			if(verificaDataInicio == null && verificaDataFim == null) {
 				
-				System.out.println("Verifica Data inicio: " + verificaDataInicio);
 				retorno = true;
 			}
 		
@@ -171,6 +173,26 @@ public class AgendamentoAreaComumService {
 			}
 			
 			
+		}
+		
+		public AgendamentoAreaComum atualizaStatus(AgendamentoAreaComum agendamento, Long codigo) {
+			
+			StatusAgendamento status = agendamento.getStatusAgendamento();
+			AgendamentoAreaComum agendamentoSalvo = buscaPorId(codigo);
+			AreasComuns areaComumSalva = areacomumAreasComunsRepository.findById(agendamentoSalvo.getAreaComum().getAreaComumId()).orElseThrow(() -> new EmptyResultDataAccessException(1));
+			
+			Boolean permiteRetirarValor = areaComumSalva.getPermiteRetirarValor();
+			
+			if(status.equals(StatusAgendamento.CANCELADO)) {
+				if(permiteRetirarValor) {
+					
+					lancamentoService.atualizaStatusLancamento(agendamentoSalvo.getHashLancamento());
+				}
+			}
+			
+			BeanUtils.copyProperties(agendamento, agendamentoSalvo, "agendamentoAreaComumId");
+			
+			return agendamentoAreaComumRepository.save(agendamentoSalvo);
 		}
 	
 	private AgendamentoAreaComum buscaPorId(Long codigo) {

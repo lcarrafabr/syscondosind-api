@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.carrafasoft.syscondosind.api.enums.StatusSituacao;
 import com.carrafasoft.syscondosind.api.model.Lancamentos;
 import com.carrafasoft.syscondosind.api.repository.LancamentosRepository;
 import com.carrafasoft.syscondosind.api.utils.FuncoesUtils;
@@ -116,7 +117,7 @@ public class LancamentosService {
 	}
 	
 	
-	public void cadastrarLancamentoQuandoAlugarAreaComum(Lancamentos lancamento) {
+	public Lancamentos cadastrarLancamentoQuandoAlugarAreaComum(Lancamentos lancamento) {
 		
 		String chavePesquisa = FuncoesUtils.gerarHash();
 		
@@ -130,8 +131,39 @@ public class LancamentosService {
 		 
 		 lancamento.setChavePesquisa(chavePesquisa);
 		
-		lancamentosRepository.save(lancamento);
+		return lancamentosRepository.save(lancamento);
 		
+	}
+	
+	
+	public void atualizaStatusLancamento(String chavePesquisa) {
+		
+		List<Lancamentos> lancSalvo = lancamentosRepository.buscarPorchave(chavePesquisa);
+		
+		
+		lancSalvo.stream().forEach((list) -> {
+			Lancamentos removeLanc = new Lancamentos();
+			
+			removeLanc.setLancamentoId(list.getLancamentoId());
+			removeLanc.setTipoNatureza(list.getTipoNatureza());
+			removeLanc.setDataPagamento(list.getDataPagamento());
+			removeLanc.setDataVencimento(list.getDataVencimento());
+			removeLanc.setDescricao(list.getDescricao());			
+			removeLanc.setSituacao(StatusSituacao.CANCELADO);
+			removeLanc.setParcelado(list.getParcelado());
+			removeLanc.setQuantidadeParcelas(list.getQuantidadeParcelas());
+			removeLanc.setNumeroParcela(list.getNumeroParcela());
+			removeLanc.setFormaPagamento(list.getFormaPagamento());
+			removeLanc.setContaBancaria(list.getContaBancaria());
+			removeLanc.setCentroCusto(list.getCentroCusto());
+			removeLanc.setCategoriaConta(list.getCategoriaConta());
+			removeLanc.setChavePesquisa(list.getChavePesquisa());
+			removeLanc.setValor(list.getValor());
+			
+			lancamentosRepository.save(removeLanc);
+		});
+		
+		//lancamentosRepository.saveAll(lancSalvo);
 	}
 	
 	

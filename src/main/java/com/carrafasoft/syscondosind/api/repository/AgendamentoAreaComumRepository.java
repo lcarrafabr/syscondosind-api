@@ -18,6 +18,7 @@ public interface AgendamentoAreaComumRepository extends JpaRepository<Agendament
 					+ "where  :dataInicio >= data_inicio_agendamento "
 					+ "and  :dataInicio <= data_fim_agendamento "
 					+ "and area_comum_id = :codigoAreaComum "
+					+ "and status_agendamento <> 'CANCELADO' "
 					+ "limit 1 ")
 	public LocalDateTime buscaDataInicioLivre(LocalDateTime dataInicio, Long codigoAreaComum);
 	
@@ -27,6 +28,7 @@ public interface AgendamentoAreaComumRepository extends JpaRepository<Agendament
 					+ "where  :dataFim >= data_inicio_agendamento "
 					+ "and  :dataFim <= data_fim_agendamento "
 					+ "and area_comum_id = :codigoAreaComum "
+					+ "and status_agendamento <> 'CANCELADO' "
 					+ "limit 1 ")
 	public LocalDateTime buscaDataFimLivre(LocalDateTime dataFim, Long codigoAreaComum);
 

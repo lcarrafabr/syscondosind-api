@@ -24,55 +24,58 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @Table(name = "agendamento_area_comum")
 public class AgendamentoAreaComum {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "agendamento_area_comum_id")
 	private Long agendamentoAreaComumId;
-	
+
 	@NotNull
 	@Size(min = 5, max = 100)
 	@Column(name = "titulo_agendamento", length = 100)
 	private String tituloAgendamento;
-	
+
 	@Column(name = "data_criacao_agendamento", insertable = true, updatable = false)
 	private LocalDateTime dataCriacaoAgendamento;
-	
+
 	@NotNull
 	@Column(name = "data_inicio_agendamento")
 	private LocalDateTime dataInicioAgendamento;
-	
+
 	@NotNull
 	@Column(name = "data_fim_agendamento")
 	private LocalDateTime dataFimAgendamento;
-	
+
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status_agendamento", length = 20)
 	private StatusAgendamento statusAgendamento;
-	
+
 	@ManyToOne
 	@JsonIgnoreProperties("condominio")
 	@JoinColumn(name = "lista_id")
 	private ListaConvidados listaCOnvidados;
-	
+
 	@NotNull
 	@JsonIgnoreProperties("enderecoCondominio")
 	@ManyToOne
 	@JoinColumn(name = "condominio_id")
 	private Condominios condominio;
-	
+
 	@NotNull
 	@JsonIgnoreProperties("condominio")
 	@ManyToOne
 	@JoinColumn(name = "pessoa_id")
 	private Pessoas pessoaMorador;
-	
+
 	@NotNull
 	@JsonIgnoreProperties("condominio")
 	@ManyToOne
 	@JoinColumn(name = "area_comum_id")
 	private AreasComuns areaComum;
+
+	@Column(name = "hash_lancamento", length = 100)
+	private String hashLancamento;
 
 	public Long getAgendamentoAreaComumId() {
 		return agendamentoAreaComumId;
@@ -154,6 +157,14 @@ public class AgendamentoAreaComum {
 		this.areaComum = areaComum;
 	}
 
+	public String getHashLancamento() {
+		return hashLancamento;
+	}
+
+	public void setHashLancamento(String hashLancamento) {
+		this.hashLancamento = hashLancamento;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -178,18 +189,17 @@ public class AgendamentoAreaComum {
 			return false;
 		return true;
 	}
-	
-	
+
 	@PrePersist
 	public void aoCadastrar() {
-		
+
 		tituloAgendamento = tituloAgendamento.toUpperCase().trim();
 		dataCriacaoAgendamento = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
 	}
-	
+
 	@PreUpdate
 	public void aoAtualizar() {
-		
+
 		tituloAgendamento = tituloAgendamento.toUpperCase().trim();
 	}
 

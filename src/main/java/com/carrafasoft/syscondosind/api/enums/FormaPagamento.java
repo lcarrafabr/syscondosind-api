@@ -9,6 +9,7 @@ public enum FormaPagamento {
 	CHEQUE,
 	DÉBITO_AUTOMATICO,
 	TRANSFERENCIA,
-	BOLETO
+	BOLETO,
+	PIX
 
 }

@@ -4,6 +4,7 @@ public enum StatusSituacao {
 	
 	PENDENTE,
 	PAGO,
-	VENCIDO
+	VENCIDO,
+	CANCELADO
 
 }

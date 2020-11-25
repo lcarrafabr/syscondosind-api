@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import com.carrafasoft.syscondosind.api.model.AgendamentoAreaComum;
 import com.carrafasoft.syscondosind.api.model.AreasComuns;
 import com.carrafasoft.syscondosind.api.model.Lancamentos;
 import com.carrafasoft.syscondosind.api.repository.AgendamentoAreaComumRepository;
+import com.carrafasoft.syscondosind.api.repository.AreasComunsRepository;
 
 @Service
 public class AgendamentoAreaComumService {
@@ -27,11 +29,16 @@ public class AgendamentoAreaComumService {
 	
 	@Autowired LancamentosService lancamentoService;
 	
+	@Autowired 
+	private AreasComunsRepository areacomumAreasComunsRepository;
+	
 	
 	public AgendamentoAreaComum cadastraAgendamentoECriaLancamento(AgendamentoAreaComum agendamento, BigDecimal valorLocacao, AreasComuns areaComumSalva) {
 		
 		
-		cadastrarLancamentoQuandoAlugarAreaComum(valorLocacao, agendamento, areaComumSalva);
+		Lancamentos lancamentoSalvo = cadastrarLancamentoQuandoAlugarAreaComum(valorLocacao, agendamento, areaComumSalva);
+		
+		agendamento.setHashLancamento(lancamentoSalvo.getChavePesquisa());
 		
 		AgendamentoAreaComum agendamentoSalvo = agendamentoAreaComumRepository.save(agendamento);
 		
@@ -40,7 +47,7 @@ public class AgendamentoAreaComumService {
 	}
 	
 	
-	private void cadastrarLancamentoQuandoAlugarAreaComum(BigDecimal valorAluguel, AgendamentoAreaComum agendamento, AreasComuns areaComumSalva) {
+	private Lancamentos cadastrarLancamentoQuandoAlugarAreaComum(BigDecimal valorAluguel, AgendamentoAreaComum agendamento, AreasComuns areaComumSalva) {
 		
 		Lancamentos lancNovo = new Lancamentos();
 		String descricao = "Lançamento da locação da Area comum: " + agendamento.getTituloAgendamento().trim().toUpperCase();
@@ -60,7 +67,9 @@ public class AgendamentoAreaComumService {
 		lancNovo.setCentroCusto(areaComumSalva.getCentroCusto());
 		lancNovo.setCategoriaConta(areaComumSalva.getCategoriaContas());
 		
-		lancamentoService.cadastrarLancamentoQuandoAlugarAreaComum(lancNovo);
+		Lancamentos lancamentoSalvo = lancamentoService.cadastrarLancamentoQuandoAlugarAreaComum(lancNovo);
+		
+		return lancamentoSalvo;
 		
 	}
 	
@@ -83,8 +92,88 @@ public class AgendamentoAreaComumService {
 		
 		return retorno;
 	}
+		
+		
+		public Boolean diasAntecedenciaParaAgendar(AgendamentoAreaComum agendamento, AreasComuns areacomum) {
+
+			boolean valido = false;
+			Integer dias = areacomum.getDiasAntecedencia();
+			LocalDateTime dataAgendamentoInicio = agendamento.getDataInicioAgendamento();
+			LocalDateTime horaAgora = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));			
+			
+			if(horaAgora.isBefore(dataAgendamentoInicio.minusDays(dias))) {
+
+				valido = true;
+			}
+			
+			if(horaAgora.isEqual(dataAgendamentoInicio.minusDays(dias))) {
+
+				valido = true;
+			}
+			
+			if(horaAgora.isAfter(dataAgendamentoInicio.minusDays(dias))) {
+
+				valido = false;
+			}
+			
+			return valido;
+		}
+		
+		public Boolean verificaDataAgendamentoIniEFim(AgendamentoAreaComum agendamento) {
+			
+			LocalDateTime dataInicio = agendamento.getDataInicioAgendamento();
+			LocalDateTime dataFim = agendamento.getDataFimAgendamento();
+			Boolean verifica = false;
+			
+			if(dataInicio.isBefore(dataFim)) {
+				
+				verifica = true;
+			}
+			
+			return verifica;
+		}
+		
+		public void removerrAgendamento(Long codigo) {
+			
+			AgendamentoAreaComum agendamentoSalvo = buscaPorId(codigo);
+			AreasComuns areaComumSalva = areacomumAreasComunsRepository.findById(agendamentoSalvo.getAreaComum().getAreaComumId()).orElseThrow(() -> new EmptyResultDataAccessException(1));
+			
+			boolean valido = false;
+			Boolean permiteRetirarValor = areaComumSalva.getPermiteRetirarValor();
+			Integer diasParaCancelar = areaComumSalva.getDiasParaCancelar();
+			LocalDateTime horaAgora = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+			LocalDateTime dataAgendamentoInicio = agendamentoSalvo.getDataInicioAgendamento();
+			
+			if(horaAgora.isBefore(dataAgendamentoInicio.minusDays(diasParaCancelar))) {
+
+				valido = true;
+			}
+			
+			if(horaAgora.isEqual(dataAgendamentoInicio.minusDays(diasParaCancelar))) {
+
+				valido = true;
+			}
+			
+			if(horaAgora.isAfter(dataAgendamentoInicio.minusDays(diasParaCancelar))) {
+
+				valido = false;
+			}
+			
+			if(valido) {
+				
+				if(permiteRetirarValor) {
+					
+					lancamentoService.atualizaStatusLancamento(agendamentoSalvo.getHashLancamento());
+				}
+				
+				//Cancelar agendamento
+				agendamentoAreaComumRepository.deleteById(codigo);
+			}
+			
+			
+		}
 	
-	private AgendamentoAreaComum buscaPorId(Long codigo, AgendamentoAreaComum agendamento) {
+	private AgendamentoAreaComum buscaPorId(Long codigo) {
 		
 		AgendamentoAreaComum agendamentoSalvo = agendamentoAreaComumRepository.findById(codigo).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return agendamentoSalvo;

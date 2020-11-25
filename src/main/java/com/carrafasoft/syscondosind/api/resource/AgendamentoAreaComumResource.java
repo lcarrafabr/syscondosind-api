@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -28,6 +29,10 @@ import com.carrafasoft.syscondosind.api.model.AreasComuns;
 import com.carrafasoft.syscondosind.api.repository.AgendamentoAreaComumRepository;
 import com.carrafasoft.syscondosind.api.repository.AreasComunsRepository;
 import com.carrafasoft.syscondosind.api.service.AgendamentoAreaComumService;
+
+import br.com.caelum.stella.boleto.Boleto;
+import br.com.caelum.stella.boleto.transformer.GeradorDeBoleto;
+import br.com.caelum.stella.boleto.transformer.GeradorDeBoletoHTML;
 
 @RestController
 @RequestMapping("agendamento-area-comum")
@@ -125,6 +130,17 @@ public class AgendamentoAreaComumResource {
 		AgendamentoAreaComum agendamentoSalvo = agendamentoService.atualizaStatus(agendamento, codigo);
 		
 		return ResponseEntity.ok(agendamentoSalvo);
+	}
+	
+	@GetMapping("/teste")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public GeradorDeBoletoHTML testeBoleto(HttpServletResponse response) {
+		
+		GeradorDeBoletoHTML boleto = agendamentoService.teste(response);
+		
+		
+		
+		return null;
 	}
 
 }

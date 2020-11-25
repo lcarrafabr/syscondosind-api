@@ -1,5 +1,6 @@
 package com.carrafasoft.syscondosind.api.service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,9 +8,13 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +27,21 @@ import com.carrafasoft.syscondosind.api.model.AreasComuns;
 import com.carrafasoft.syscondosind.api.model.Lancamentos;
 import com.carrafasoft.syscondosind.api.repository.AgendamentoAreaComumRepository;
 import com.carrafasoft.syscondosind.api.repository.AreasComunsRepository;
+
+import br.com.caelum.stella.boleto.Banco;
+import br.com.caelum.stella.boleto.Beneficiario;
+import br.com.caelum.stella.boleto.Boleto;
+import br.com.caelum.stella.boleto.Datas;
+import br.com.caelum.stella.boleto.Endereco;
+import br.com.caelum.stella.boleto.Pagador;
+import br.com.caelum.stella.boleto.bancos.BancoDoBrasil;
+import br.com.caelum.stella.boleto.bancos.Bradesco;
+import br.com.caelum.stella.boleto.bancos.Caixa;
+import br.com.caelum.stella.boleto.bancos.HSBC;
+import br.com.caelum.stella.boleto.bancos.Itau;
+import br.com.caelum.stella.boleto.bancos.Santander;
+import br.com.caelum.stella.boleto.transformer.GeradorDeBoleto;
+import br.com.caelum.stella.boleto.transformer.GeradorDeBoletoHTML;
 
 @Service
 public class AgendamentoAreaComumService {
@@ -210,6 +230,78 @@ public class AgendamentoAreaComumService {
 		LocalDate dataVenc = LocalDate.of(ano, mes, dia).plusDays(30);
 		
 		return dataVenc;
+	}
+	
+	
+	/**Para gerar em HTML usar o paramentro HttpServletRequest request tbm*/
+	public GeradorDeBoletoHTML teste(HttpServletResponse response) {
+		
+		Datas datas = Datas.novasDatas()
+                .comDocumento(10, 12, 2020)
+                .comProcessamento(15, 12, 2020) //A data que gerou
+                .comVencimento(10, 1, 2021);
+		
+		Endereco enderecoBeneficiario = Endereco.novoEndereco()
+        		.comLogradouro("Rua custódio paiva, 205")  
+        		.comBairro("Jd São paulo (Zona leste)")  
+        		.comCep("08461-530")  
+        		.comCidade("São Paulo")  
+        		.comUf("SP");  
+		
+		 //Quem emite o boleto
+        Beneficiario beneficiario = Beneficiario.novoBeneficiario()  
+                .comNomeBeneficiario("Cup Lover")  
+                .comAgencia("1824").comDigitoAgencia("4")  
+                .comCodigoBeneficiario("76000")  
+                .comDigitoCodigoBeneficiario("5")  
+                .comNumeroConvenio("1207113")  
+                .comCarteira("18")  
+                .comEndereco(enderecoBeneficiario)
+                .comNossoNumero("9000206");
+                //.comDigitoNossoNumero("347-1");  // =>> para o Itau
+        
+        Endereco enderecoPagador = Endereco.novoEndereco()
+        		.comLogradouro("Rua custódio paiva, 205 apto 46 torre 09")  
+        		.comBairro("Jd São paulo (Zona leste)")  
+        		.comCep("08461-530")  
+        		.comCidade("São Paulo")  
+        		.comUf("SP");  
+        
+      //Quem paga o boleto
+        Pagador pagador = Pagador.novoPagador()  
+                .comNome("Debora da costa S C Benfica")  
+                .comDocumento("111.222.333-12")
+                .comEndereco(enderecoPagador);
+        
+        //Banco banco = new BancoDoBrasil(); 
+        Banco banco = new Itau();
+        
+        Boleto boleto = Boleto.novoBoleto()  
+                .comBanco(banco)  
+                .comDatas(datas)  
+                .comBeneficiario(beneficiario)  
+                .comPagador(pagador)  
+                .comValorBoleto("0.01")  
+                .comNumeroDoDocumento("3471")  
+                .comInstrucoes("instrucao 1", "instrucao 2", "instrucao 3", "instrucao 4", "instrucao 5")  
+                .comLocaisDePagamento("local 1", "local 2");  
+        
+       // GeradorDeBoleto gerador = new GeradorDeBoleto(boleto);
+        
+        GeradorDeBoletoHTML gerador = new GeradorDeBoletoHTML(boleto);
+        try {
+			gerador.geraPDF(response.getOutputStream());
+        	//gerador.geraHTML(response.getWriter(), request); ==>> Para gerar em HTML mas as imagens não funcionam
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+        
+     // Para gerar um boleto em PNG  
+        //gerador.geraPNG("BancoDoBrasil.png");
+        
+        return gerador;
 	}
 
 

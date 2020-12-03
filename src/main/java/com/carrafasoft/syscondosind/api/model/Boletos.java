@@ -6,6 +6,8 @@ import java.time.ZoneId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +17,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.carrafasoft.syscondosind.api.enums.SituacaoBoleto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -44,6 +47,10 @@ public class Boletos {
 
 	@Column(name = "nosso_numero")
 	private Long nossoNumero;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "situacao_boleto")
+	private SituacaoBoleto situacaoBoleto;
 
 	@NotNull
 	@JsonIgnoreProperties("enderecoCondominio")
@@ -104,6 +111,14 @@ public class Boletos {
 
 	public Long getNumeroDocumento() {
 		return numeroDocumento;
+	}
+
+	public SituacaoBoleto getSituacaoBoleto() {
+		return situacaoBoleto;
+	}
+
+	public void setSituacaoBoleto(SituacaoBoleto situacaoBoleto) {
+		this.situacaoBoleto = situacaoBoleto;
 	}
 
 	public void setNumeroDocumento(Long numeroDocumento) {
@@ -171,6 +186,7 @@ public class Boletos {
 	public void aoCadastrar() {
 
 		dataDocumento = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
+		situacaoBoleto = SituacaoBoleto.EM_ABERTO;
 	}
 
 }

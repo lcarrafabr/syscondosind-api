@@ -30,7 +30,7 @@ public class ConfigBoletoService {
 		return configSalvo;
 	}
 	
-	private ConfigBoletos buscaPorId(Long codigo) {
+	public ConfigBoletos buscaPorId(Long codigo) {
 		
 		ConfigBoletos configSalva = configBoletoRepository.findById(codigo).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return configSalva;

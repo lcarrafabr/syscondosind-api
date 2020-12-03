@@ -42,7 +42,7 @@ public class ModeloBoletoService {
 	
 	
 	
-	private ModeloBoletos buscaPorId(Long codigo) {
+	public ModeloBoletos buscaPorId(Long codigo) {
 		
 		ModeloBoletos modeloSalvo = modelosBoletoRepository.findById(codigo).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return modeloSalvo;

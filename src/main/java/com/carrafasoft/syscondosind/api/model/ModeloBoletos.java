@@ -266,15 +266,32 @@ public class ModeloBoletos {
 	}
 
 	private void toUpperCase() {
+		
+		if(instruncao01 != null && !instruncao01.isEmpty()) {
+			instruncao01 = instruncao01.trim().toUpperCase();
+		}
+		if(instruncao02 != null && !instruncao02.isEmpty()) {
+			instruncao02 = instruncao02.trim().toUpperCase();
+		}
+		if(instruncao03 != null && !instruncao03.isEmpty()) {
+			instruncao03 = instruncao03.trim().toUpperCase();
+		}
+		if(instruncao04 != null && !instruncao04.isEmpty()) {
+			instruncao04 = instruncao04.trim().toUpperCase();
+		}
+		if(instruncao05 != null && !instruncao05.isEmpty()) {
+			instruncao05 = instruncao05.trim().toUpperCase();
+		}
+			
+		
+		if(local01 != null && !local01.isEmpty()) {
+			local01 = local01.trim().toUpperCase();
+		}
+		
+		if(local02 != null && !local02.isEmpty()) {
+			local02 = local02.trim().toUpperCase();
+		}
 
-		instruncao01 = instruncao01.trim().toUpperCase();
-		instruncao02 = instruncao02.trim().toUpperCase();
-		instruncao03 = instruncao03.trim().toUpperCase();
-		instruncao04 = instruncao04.trim().toUpperCase();
-		instruncao05 = instruncao05.trim().toUpperCase();
-
-		local01 = local01.trim().toUpperCase();
-		local02 = local02.trim().toUpperCase();
 	}
 
 }

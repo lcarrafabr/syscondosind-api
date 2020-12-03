@@ -24,6 +24,12 @@ public class ConfigBoletoService {
 		return configBoletoRepository.save(configSalva);
 	}
 	
+	public ConfigBoletos cadastrarERetornarParaModeloBoleto(ConfigBoletos config) {
+		
+		ConfigBoletos configSalvo = configBoletoRepository.save(config);
+		return configSalvo;
+	}
+	
 	private ConfigBoletos buscaPorId(Long codigo) {
 		
 		ConfigBoletos configSalva = configBoletoRepository.findById(codigo).orElseThrow(() -> new EmptyResultDataAccessException(1));

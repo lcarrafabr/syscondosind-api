@@ -1,9 +1,12 @@
 package com.carrafasoft.syscondosind.api.utils;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
+
+import com.sun.el.parser.ParseException;
 
 public class FuncoesUtils {
 	
@@ -48,5 +51,23 @@ public class FuncoesUtils {
 		//System.out.println(myRandom.substring(0,20));
 		return myRandom.substring(0,20);
 	}
+	
+	public static String getZeroEsq(Long codigo,int quant) throws ParseException, java.text.ParseException{
+	      //Calcular zeros
+	      String formato = "";
+
+	        for (int i = 0; i < quant; i++) {
+	            formato += "0";
+	        }
+
+	      //Formatar codigo
+	      String codigoRetorno = null;
+	      DecimalFormat formatoCodigo = new DecimalFormat(formato);
+	      codigoRetorno = formatoCodigo.format(codigo);
+
+	      return codigoRetorno;
+
+
+	  }
 
 }

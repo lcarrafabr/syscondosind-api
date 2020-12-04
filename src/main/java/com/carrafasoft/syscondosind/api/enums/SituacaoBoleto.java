@@ -4,6 +4,7 @@ public enum SituacaoBoleto {
 	
 	EM_ABERTO,
 	ATRASADO,
+	CANCELADO,
 	CONFIRMADO
 
 }

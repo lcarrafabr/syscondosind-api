@@ -30,6 +30,7 @@ import br.com.caelum.stella.boleto.Pagador;
 import br.com.caelum.stella.boleto.bancos.BancoDoBrasil;
 import br.com.caelum.stella.boleto.bancos.Bradesco;
 import br.com.caelum.stella.boleto.bancos.Itau;
+import br.com.caelum.stella.boleto.bancos.Santander;
 import br.com.caelum.stella.boleto.transformer.GeradorDeBoletoHTML;
 
 @Service
@@ -150,6 +151,9 @@ public class BoletosService {
 		if(boletoSalvo.getModeloBoleto().getBancoEnum().equals(BancoEnum.BB)) {
 			carteira = boletoSalvo.getModeloBoleto().getCarteira();
 		}
+		if(boletoSalvo.getModeloBoleto().getBancoEnum().equals(BancoEnum.SANTANDER)) {
+			carteira = boletoSalvo.getModeloBoleto().getCarteira();
+		}
 		
 		
 		 //Quem emite o boleto
@@ -159,12 +163,13 @@ public class BoletosService {
                 .comDigitoAgencia("4")  // TODO atualizar contas bancarias e incluir o digito
                 .comCodigoBeneficiario(boletoSalvo.getModeloBoleto().getBeneficiario().getCodigoBeneficiario())  
                 .comDigitoCodigoBeneficiario(boletoSalvo.getModeloBoleto().getBeneficiario().getDigitoBeneficiario())  
-                .comNumeroConvenio("54545")  
-                .comCarteira(carteira)  // => Itaú não usa carteira - pg 39 do DOC Itaú
+                .comNumeroConvenio(boletoSalvo.getModeloBoleto().getBeneficiario().getNumeroConvenio())  
+                .comCarteira(carteira)  // => Itaú não usa carteira - pg 39 do DOC Itaú // para o santander deve ter 3 numeros
                 .comEndereco(enderecoBeneficiario)
                 .comNossoNumero(boletoSalvo.getNossoNumero().toString()) //=> Numero sequencial que não pode ser repetido
                 .comDigitoNossoNumero(digitoNossoNumero);  // =>> para o Itau
-        
+		
+      
         
         
         String logradouroPagador = boletoSalvo.getMorador().getPessoa().getCondominio().getEnderecoCondominio().getLogradouro();
@@ -192,7 +197,7 @@ public class BoletosService {
         
         //Banco banco = new BancoDoBrasil(); 
         //Banco banco = new Itau();
-       //Banco banco = new Santander(); //Dando Erro
+        //Banco banco = new Santander(); //Dando Erro
         
         Banco banco = null;
         
@@ -204,6 +209,9 @@ public class BoletosService {
         }
         if(boletoSalvo.getModeloBoleto().getBancoEnum().equals(BancoEnum.BRADESCO)) {
         	banco = new Bradesco();
+        }
+        if(boletoSalvo.getModeloBoleto().getBancoEnum().equals(BancoEnum.SANTANDER)) {
+        	banco = new Santander();
         }
         
         

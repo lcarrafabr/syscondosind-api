@@ -251,14 +251,14 @@ public class AgendamentoAreaComumService {
 		 //Quem emite o boleto
         Beneficiario beneficiario = Beneficiario.novoBeneficiario()  
                 .comNomeBeneficiario("Cup Lover")  
-                .comAgencia("1824").comDigitoAgencia("4")  
-                .comCodigoBeneficiario("76000")  
-                .comDigitoCodigoBeneficiario("5")  
-                .comNumeroConvenio("1207113")  
-                .comCarteira("18")  // => Itaú não usa carteira - pg 39 do DOC Itaú
+                .comAgencia("1824").comDigitoAgencia("013")  
+                .comCodigoBeneficiario("00012345")  
+                .comDigitoCodigoBeneficiario("6")  
+                .comNumeroConvenio("221")  
+                .comCarteira("1")  // => Itaú não usa carteira - pg 39 do DOC Itaú // para o santander deve ter 3 numeros // CEF carteira é igual a 1 - 2 ou 24
                 .comEndereco(enderecoBeneficiario)
-                .comNossoNumero("9000206") //=> Numero sequencial que não pode ser repetido
-                .comDigitoNossoNumero("347-1");  // =>> para o Itau
+                .comNossoNumero("623168") //=> Numero sequencial que não pode ser repetido
+                .comDigitoNossoNumero("5");  // =>> para o Itau
         
         Endereco enderecoPagador = Endereco.novoEndereco()
         		.comLogradouro("Rua custódio paiva, 205 apto 46 torre 09")  
@@ -274,8 +274,9 @@ public class AgendamentoAreaComumService {
                 .comEndereco(enderecoPagador);
         
         //Banco banco = new BancoDoBrasil(); 
-        Banco banco = new Itau();
+        //Banco banco = new Itau();
        //Banco banco = new Santander(); //Dando Erro
+        Banco banco = new Caixa();
         
         Boleto boleto = Boleto.novoBoleto()  
                 .comBanco(banco)  

@@ -147,6 +147,10 @@ public class BoletosService {
 		if(boletoSalvo.getModeloBoleto().getBancoEnum().equals(BancoEnum.ITAU)) {
 			digitoNossoNumero = boletoSalvo.getModeloBoleto().getConfigBoletos().getDigitoNossoNumero();
 		}
+		if(boletoSalvo.getModeloBoleto().getBancoEnum().equals(BancoEnum.BB)) {
+			carteira = boletoSalvo.getModeloBoleto().getCarteira();
+		}
+		
 		
 		 //Quem emite o boleto
         Beneficiario beneficiario = Beneficiario.novoBeneficiario()  
@@ -155,7 +159,7 @@ public class BoletosService {
                 .comDigitoAgencia("4")  // TODO atualizar contas bancarias e incluir o digito
                 .comCodigoBeneficiario(boletoSalvo.getModeloBoleto().getBeneficiario().getCodigoBeneficiario())  
                 .comDigitoCodigoBeneficiario(boletoSalvo.getModeloBoleto().getBeneficiario().getDigitoBeneficiario())  
-                .comNumeroConvenio(boletoSalvo.getModeloBoleto().getBeneficiario().getNumeroConvenio())  
+                .comNumeroConvenio("54545")  
                 .comCarteira(carteira)  // => Itaú não usa carteira - pg 39 do DOC Itaú
                 .comEndereco(enderecoBeneficiario)
                 .comNossoNumero(boletoSalvo.getNossoNumero().toString()) //=> Numero sequencial que não pode ser repetido
@@ -208,11 +212,19 @@ public class BoletosService {
                 .comDatas(datas)  
                 .comBeneficiario(beneficiario)  
                 .comPagador(pagador)  
-                .comValorBoleto("0.01")  
-                .comNumeroDoDocumento("3471")  
-                .comInstrucoes("instrucao 1", "instrucao 2", "instrucao 3", "instrucao 4", "instrucao 5")  
-                .comLocaisDePagamento("ATE O VENCIMENTO PAGUE PREFERENCIALMENTE NO ITAU", 
-                		"APOS O VENCIMENTO PAGUE SOMENTE NO ITAU");  
+                .comValorBoleto(boletoSalvo.getValor())  
+                .comNumeroDoDocumento(boletoSalvo.getNumeroDocumento().toString())  
+                .comInstrucoes(
+                		boletoSalvo.getModeloBoleto().getInstruncao01(), 
+                		boletoSalvo.getModeloBoleto().getInstruncao02(), 
+                		boletoSalvo.getModeloBoleto().getInstruncao03(), 
+                		boletoSalvo.getModeloBoleto().getInstruncao04(), 
+                		boletoSalvo.getModeloBoleto().getInstruncao05()
+                		)  
+                .comLocaisDePagamento(
+                		boletoSalvo.getModeloBoleto().getLocal01(), 
+                		boletoSalvo.getModeloBoleto().getLocal02()
+                		);  
         
        // GeradorDeBoleto gerador = new GeradorDeBoleto(boleto);
         

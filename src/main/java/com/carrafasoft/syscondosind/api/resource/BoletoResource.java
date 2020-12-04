@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.carrafasoft.syscondosind.api.event.RecursoCriadoEvent;
 import com.carrafasoft.syscondosind.api.model.Boletos;
 import com.carrafasoft.syscondosind.api.repository.BoletosRepository;
 import com.carrafasoft.syscondosind.api.service.BoletosService;
@@ -30,6 +31,9 @@ public class BoletoResource {
 	
 	@Autowired
 	private BoletosRepository boletosRepository;
+	
+	@Autowired
+	private ApplicationEventPublisher publisher;
 	
 	@Autowired
 	private BoletosService boletoService;
@@ -73,7 +77,8 @@ public class BoletoResource {
 		
 		GeradorDeBoletoHTML boleto = boletoService.imprimirBoleto(codigo, response);
 		
-		return null;
+		
+		return boleto;
 	}
 
 }

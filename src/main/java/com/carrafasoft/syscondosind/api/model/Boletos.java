@@ -66,7 +66,7 @@ public class Boletos {
 
 	@NotNull
 	@ManyToOne
-	@JoinColumn(name = "")
+	@JoinColumn(name = "morador_morador_id")
 	private Moradores morador;
 
 	public Long getBoletoId() {
@@ -186,6 +186,7 @@ public class Boletos {
 	public void aoCadastrar() {
 
 		dataDocumento = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
+		dataProcessamento = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
 		situacaoBoleto = SituacaoBoleto.EM_ABERTO;
 	}
 

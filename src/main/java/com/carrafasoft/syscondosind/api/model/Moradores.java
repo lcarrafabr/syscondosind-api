@@ -43,6 +43,10 @@ public class Moradores {
 	@NotNull
 	private LocalDate dataNascimento;
 
+	@NotNull
+	@Column(name = "gerar_boleto")
+	private Boolean gerarBoleto;
+
 	// @ManyToOne
 	// @JoinColumn(name = "pessoa_id")
 	private Long proprietarioId;
@@ -108,6 +112,14 @@ public class Moradores {
 
 	public void setDataNascimento(LocalDate dataNascimento) {
 		this.dataNascimento = dataNascimento;
+	}
+
+	public Boolean getGerarBoleto() {
+		return gerarBoleto;
+	}
+
+	public void setGerarBoleto(Boolean gerarBoleto) {
+		this.gerarBoleto = gerarBoleto;
 	}
 
 	public Long getProprietarioId() {

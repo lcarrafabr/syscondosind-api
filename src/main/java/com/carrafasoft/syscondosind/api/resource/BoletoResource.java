@@ -1,5 +1,6 @@
 package com.carrafasoft.syscondosind.api.resource;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -112,5 +113,55 @@ public class BoletoResource {
 		
 		return boletoSalvo;
 	}
+	
+	
+	/**---------------------------------------------------------------------------------------------------------------------------------------------------------------**/
+	
+	@GetMapping("/valor-total-a-pagar-por-periodo")
+	public BigDecimal retornarValorTotalAPagarNoMes(@RequestParam("dataIni") String dataIni, @RequestParam("dataFim") String dataFim) {
+		
+		return boletosRepository.valorTotalAPagarPorPeriodo(
+				FuncoesUtils.converterStringParaLocalDate(dataIni), 
+				FuncoesUtils.converterStringParaLocalDate(dataFim)
+				);
+	}
+	
+	@GetMapping("/valor-a-pagar-periodo-morador")
+	public BigDecimal retornarValoresApagarPorPeriodo(@RequestParam("dataIni") String dataIni, @RequestParam("dataFim") String dataFim) {
+		
+		return boletosRepository.gerarValoresCondominioAReceber(
+				FuncoesUtils.converterStringParaLocalDate(dataIni), 
+				FuncoesUtils.converterStringParaLocalDate(dataFim)
+				);
+	}
+	
+	/**---------------------------------------------------------------------------------------------------------------------------------------------------------------**/
+	
+	@GetMapping("/gerar-mensalidade-condominio")
+	public BigDecimal gerarParcelamentoCondominio(@RequestParam("dataIni") String dataIni, 
+												 @RequestParam("dataFim") String dataFim, 
+												 @RequestParam("valorParcelaTotal") String valorParcelaTotal) {
+		
+		
+		boletoService.gerarMensalidadeCondominio(dataIni, dataFim, valorParcelaTotal);
+		
+		return null;
+	}
+	
+	/**--------------------------------------------------------------------------------------------------------------------------------------------------------------- **/
+	
+	
+	@GetMapping("/lista_valores-para-arredondar-mensalidade")
+	public List<BigDecimal> buscaValorParaArredondarMensalidade(@RequestParam("valorMensalidade") String valorMensalidade, 
+																@RequestParam("valorAlvo") String valorAlvo, 
+																@RequestParam("qtdMoradores") String qtdMoradores) {
+		
+		List<BigDecimal> opcaoValores = boletoService.buscaValorParaArredondarMensalidade(valorMensalidade, valorAlvo, qtdMoradores);
+		
+		return opcaoValores;
+		
+	}
+	
+	/*******************************************************************************************************************************************************************/
 
 }

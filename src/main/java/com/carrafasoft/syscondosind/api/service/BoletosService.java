@@ -1,8 +1,7 @@
 package com.carrafasoft.syscondosind.api.service;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.Month;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,9 +19,9 @@ import com.carrafasoft.syscondosind.api.enums.BancoEnum;
 import com.carrafasoft.syscondosind.api.event.RecursoCriadoEvent;
 import com.carrafasoft.syscondosind.api.model.Boletos;
 import com.carrafasoft.syscondosind.api.model.ConfigBoletos;
-import com.carrafasoft.syscondosind.api.model.Lancamentos;
 import com.carrafasoft.syscondosind.api.model.ModeloBoletos;
 import com.carrafasoft.syscondosind.api.repository.BoletosRepository;
+import com.carrafasoft.syscondosind.api.repository.MoradorRepository;
 import com.carrafasoft.syscondosind.api.utils.FuncoesUtils;
 
 import br.com.caelum.stella.boleto.Banco;
@@ -54,6 +53,9 @@ public class BoletosService {
 	
 	@Autowired
 	private LancamentosService lancamentosService;
+	
+	@Autowired
+	private MoradorRepository moradorRepository;
 	
 	
 	public ResponseEntity<Boletos> cadastrarBoleto(Boletos boleto, HttpServletResponse response) {
@@ -290,14 +292,68 @@ public class BoletosService {
 			}
 			httpstatus = ResponseEntity.ok(boletoSalvo);
 		}
-		
-		
-		
+
 		return httpstatus;
 	}
 	
-	/**
-	 * @return *************************************************************************************************************************************************/
+	/*************************************************************************************************************************************************/
+	/**---------------------------------------------------------------------------------------------------------------------------------------------------------------**/
+	
+	
+	public void gerarMensalidadeCondominio(String dataIni, String dataFim, String valorParcelaTotal) {
+		
+		BigDecimal valorTotal = new BigDecimal(valorParcelaTotal);
+		Integer qtdMorador = moradorRepository.quatidadeDeMoradoresparaGerarBoleto();
+		
+		BigDecimal qtdMoradorParaGerarBoleto = new BigDecimal(qtdMorador);
+		
+		BigDecimal mensalidade = valorTotal.divide(qtdMoradorParaGerarBoleto);
+		
+		System.out.println("mensalidade: " + mensalidade);
+		
+		
+	}
+	
+	
+	/**---------------------------------------------------------------------------------------------------------------------------------------------------------------**/
+	/***************************************************************************************************************************************************/
+	
+	
+	public List<BigDecimal> buscaValorParaArredondarMensalidade(String valorMensalidade, String valorAlvo, String qtdMoradores) {
+		
+		BigDecimal valormens = new BigDecimal(valorMensalidade);
+		BigDecimal valorAlvo2 = new BigDecimal(valorAlvo);
+		BigDecimal bd = new BigDecimal(qtdMoradores);
+		BigDecimal adicao = new BigDecimal("0.01");
+		Boolean finalizar = true;
+		
+		BigDecimal resto = new BigDecimal(-1);
+		
+		List<BigDecimal> opcoes = new ArrayList<BigDecimal>();
+		
+		while(finalizar) {
+			
+			resto = valormens.remainder(bd);
+			
+			if(resto.equals(new BigDecimal("0.00"))) {
+				
+				opcoes.add(valormens);
+				
+			}
+			valormens = valormens.add(adicao);
+			
+			if(valormens.compareTo(valorAlvo2) == 1) {
+				finalizar = false;
+			}
+
+		}
+
+		return opcoes;
+	}
+	
+	
+	/***************************************************************************************************************************************************/
+	
 	
 	private Boletos atualizarStatusLancGerado(Long codigo, Boolean ativo) {
 		

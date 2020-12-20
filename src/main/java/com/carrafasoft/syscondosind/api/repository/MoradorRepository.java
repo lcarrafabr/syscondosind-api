@@ -16,5 +16,10 @@ public interface MoradorRepository  extends JpaRepository<Moradores, Long>{
 			+ "inner join pessoas p on p.pessoa_id = m.pessoa_id "
 			+ "where p.status = 1 ")
 	List<Moradores> findMoradorPessoaAtiva();
+	
+	
+	@Query(nativeQuery = true,
+			value = "select count(morador_id) as qtd_morador from moradores where gerar_boleto = 1 ")
+	Integer quatidadeDeMoradoresparaGerarBoleto();
 
 }

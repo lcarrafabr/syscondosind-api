@@ -2,6 +2,7 @@ package com.carrafasoft.syscondosind.api.service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +19,13 @@ import org.springframework.stereotype.Service;
 import com.carrafasoft.syscondosind.api.enums.BancoEnum;
 import com.carrafasoft.syscondosind.api.event.RecursoCriadoEvent;
 import com.carrafasoft.syscondosind.api.model.Boletos;
+import com.carrafasoft.syscondosind.api.model.Condominios;
 import com.carrafasoft.syscondosind.api.model.ConfigBoletos;
 import com.carrafasoft.syscondosind.api.model.ModeloBoletos;
+import com.carrafasoft.syscondosind.api.model.Moradores;
 import com.carrafasoft.syscondosind.api.repository.BoletosRepository;
+import com.carrafasoft.syscondosind.api.repository.CondominioRepository;
+import com.carrafasoft.syscondosind.api.repository.ModelosBoletoRepository;
 import com.carrafasoft.syscondosind.api.repository.MoradorRepository;
 import com.carrafasoft.syscondosind.api.utils.FuncoesUtils;
 
@@ -52,10 +57,16 @@ public class BoletosService {
 	private ModeloBoletoService modeloBoletoService;
 	
 	@Autowired
+	private ModelosBoletoRepository modeloBoletoRepository;
+	
+	@Autowired
 	private LancamentosService lancamentosService;
 	
 	@Autowired
 	private MoradorRepository moradorRepository;
+	
+	@Autowired
+	private CondominioRepository condominioRepository;
 	
 	
 	public ResponseEntity<Boletos> cadastrarBoleto(Boletos boleto, HttpServletResponse response) {
@@ -297,10 +308,14 @@ public class BoletosService {
 	}
 	
 	/*************************************************************************************************************************************************/
-	/**---------------------------------------------------------------------------------------------------------------------------------------------------------------**/
+	/**---------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 * @param condominioId 
+	 * @param modeloBoletoId 
+	 * @param dataVencimento 
+	 * @return **/
 	
 	
-	public void gerarMensalidadeCondominio(String dataIni, String dataFim, String valorParcelaTotal) {
+	public ResponseEntity<Boletos> gerarMensalidadeCondominio(String valorParcelaTotal, String dataVencimento, String modeloBoletoId, String condominioId, HttpServletResponse response) {
 		
 		BigDecimal valorTotal = new BigDecimal(valorParcelaTotal);
 		Integer qtdMorador = moradorRepository.quatidadeDeMoradoresparaGerarBoleto();
@@ -309,9 +324,33 @@ public class BoletosService {
 		
 		BigDecimal mensalidade = valorTotal.divide(qtdMoradorParaGerarBoleto);
 		
-		System.out.println("mensalidade: " + mensalidade);
+		Condominios condominioSalvo = condominioRepository.findById(Long.parseLong(condominioId)).orElseThrow(() -> new EmptyResultDataAccessException(1));
+		ModeloBoletos modeloBoletoSalvo = modeloBoletoRepository.findById(Long.parseLong(modeloBoletoId)).orElseThrow(() -> new EmptyResultDataAccessException(1));
+		
+		List<Moradores> moradorList = moradorRepository.listarMoradoresParaGerarBoleto();
+		
+		List<Boletos> boletosCadastrados = new ArrayList<Boletos>();
+		
+		LocalDate dataVenc = FuncoesUtils.converterStringParaLocalDate(dataVencimento);
+		ResponseEntity<Boletos> boletoSalvo = new ResponseEntity<Boletos>(HttpStatus.CREATED);
 		
 		
+		for (int i = 0; i < moradorList.size(); i++) {
+			
+			Boletos boleto = new Boletos();
+			
+			
+			boleto.setDataVencimento(dataVenc);
+			boleto.setValor(mensalidade);
+			boleto.setCondominio(condominioSalvo);
+			boleto.setModeloBoleto(modeloBoletoSalvo);
+			boleto.setMorador(moradorList.get(i));
+			
+			boletoSalvo = cadastrarBoleto(boleto, response);
+			
+		}
+		
+		return boletoSalvo;
 	}
 	
 	

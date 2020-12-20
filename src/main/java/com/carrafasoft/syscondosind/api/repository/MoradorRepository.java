@@ -21,5 +21,10 @@ public interface MoradorRepository  extends JpaRepository<Moradores, Long>{
 	@Query(nativeQuery = true,
 			value = "select count(morador_id) as qtd_morador from moradores where gerar_boleto = 1 ")
 	Integer quatidadeDeMoradoresparaGerarBoleto();
+	
+	
+	@Query(nativeQuery = true,
+			value = "select * from moradores where gerar_boleto = 1 ")
+	List<Moradores> listarMoradoresParaGerarBoleto();
 
 }

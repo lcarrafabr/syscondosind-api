@@ -138,14 +138,16 @@ public class BoletoResource {
 	/**---------------------------------------------------------------------------------------------------------------------------------------------------------------**/
 	
 	@GetMapping("/gerar-mensalidade-condominio")
-	public BigDecimal gerarParcelamentoCondominio(@RequestParam("dataIni") String dataIni, 
-												 @RequestParam("dataFim") String dataFim, 
-												 @RequestParam("valorParcelaTotal") String valorParcelaTotal) {
+	public ResponseEntity<Boletos> gerarParcelamentoCondominio(@RequestParam("valorParcelaTotal") String valorParcelaTotal,
+												 @RequestParam("dataVencimento") String dataVencimento,
+												 @RequestParam("modeloBoletoId") String modeloBoletoId,
+												 @RequestParam("condominioId") String condominioId,
+												 HttpServletResponse response) {
 		
 		
-		boletoService.gerarMensalidadeCondominio(dataIni, dataFim, valorParcelaTotal);
 		
-		return null;
+		
+		return boletoService.gerarMensalidadeCondominio(valorParcelaTotal, dataVencimento, modeloBoletoId, condominioId, response);
 	}
 	
 	/**--------------------------------------------------------------------------------------------------------------------------------------------------------------- **/

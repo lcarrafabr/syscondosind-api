@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.carrafasoft.syscondosind.api.event.RecursoCriadoEvent;
 import com.carrafasoft.syscondosind.api.model.Boletos;
+import com.carrafasoft.syscondosind.api.model.Lancamentos;
 import com.carrafasoft.syscondosind.api.repository.BoletosRepository;
 import com.carrafasoft.syscondosind.api.service.BoletosService;
 import com.carrafasoft.syscondosind.api.utils.FuncoesUtils;
@@ -83,6 +84,8 @@ public class BoletoResource {
 		return boleto;
 	}
 	
+	/********************************************************************************************************************************************************************/
+	
 	@GetMapping("/listar-boletos-sem-lancamentos")
 	public List<Boletos> listarTodosBoletosSemLancamentoGerado() {
 		
@@ -96,6 +99,18 @@ public class BoletoResource {
 				FuncoesUtils.converterStringParaLocalDate(dataIni), 
 				FuncoesUtils.converterStringParaLocalDate(dataFim)
 				);
+	}
+	
+	@GetMapping("/gerar-lancamentos-a-receber")
+	public ResponseEntity<List<Boletos>> gerarLancamentosAReceber(@RequestParam("dataIni") String dataIni, 
+										 @RequestParam("dataFim") String dataFim,
+										 @RequestParam("categoriaID") String categoriaId,
+										 @RequestParam("centroCustoId") String centroCustoId,
+										 @RequestParam("descricao") String descricao) {
+		
+		ResponseEntity<List<Boletos>> boletoSalvo = boletoService.gerarLancamentosAReceber(dataIni, dataFim, categoriaId, centroCustoId, descricao);
+		
+		return boletoSalvo;
 	}
 
 }

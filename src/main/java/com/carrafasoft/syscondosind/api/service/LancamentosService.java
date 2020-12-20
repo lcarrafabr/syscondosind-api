@@ -2,6 +2,7 @@ package com.carrafasoft.syscondosind.api.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -14,8 +15,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.carrafasoft.syscondosind.api.enums.FormaPagamento;
 import com.carrafasoft.syscondosind.api.enums.StatusSituacao;
+import com.carrafasoft.syscondosind.api.enums.TipoNatureza;
+import com.carrafasoft.syscondosind.api.model.Boletos;
+import com.carrafasoft.syscondosind.api.model.CategoriasContaPR;
+import com.carrafasoft.syscondosind.api.model.CentroDeCustos;
+import com.carrafasoft.syscondosind.api.model.ContasBancarias;
 import com.carrafasoft.syscondosind.api.model.Lancamentos;
+import com.carrafasoft.syscondosind.api.repository.CategoriaContaPRRepository;
+import com.carrafasoft.syscondosind.api.repository.CentroCustoRepository;
 import com.carrafasoft.syscondosind.api.repository.LancamentosRepository;
 import com.carrafasoft.syscondosind.api.utils.FuncoesUtils;
 
@@ -24,6 +33,12 @@ public class LancamentosService {
 	
 	@Autowired
 	private LancamentosRepository lancamentosRepository;
+	
+	@Autowired
+	private CentroCustoRepository centroCustoRepository;
+	
+	@Autowired
+	private CategoriaContaPRRepository categoriaContaRepository;
 	
 	@Transactional
 	public Lancamentos cadastrarLancamentosParcelado(Lancamentos lancamentos, HttpServletResponse response, String chavePesquisa) {
@@ -166,11 +181,66 @@ public class LancamentosService {
 		//lancamentosRepository.saveAll(lancSalvo);
 	}
 	
+	public Boolean gerarLancamentoAReceberDosBoletos(List<Boletos> boletos, Long centroDeCustos, Long categoria, String descricao) {
+		
+		Boolean salvo = false;
+		CentroDeCustos centroDeCustosSalvo = centroCustoRepository.findById(centroDeCustos).orElseThrow(() -> new EmptyResultDataAccessException(1));
+		CategoriasContaPR categoriaSalva = categoriaContaRepository.findById(categoria).orElseThrow(() -> new EmptyResultDataAccessException(1));
+		String chavePesquisa = gerarChavePesquisa();
+		List<Lancamentos> lancamentoList = new ArrayList<Lancamentos>();
+		
+		for (Boletos boletos2 : boletos) {
+
+			Lancamentos lanc = new Lancamentos();
+			//Long codigoCondominio = boletos2.getCondominio().getCondominioId();
+			ContasBancarias contaBancaria = boletos2.getModeloBoleto().getContaBancaria();
+			
+			lanc.setContaBancaria(contaBancaria);
+			lanc.setCentroCusto(centroDeCustosSalvo);
+			lanc.setCategoriaConta(categoriaSalva);
+			lanc.setTipoNatureza(TipoNatureza.RECEBER);
+			lanc.setValor(boletos2.getValor());
+			lanc.setDataVencimento(boletos2.getDataVencimento());
+			lanc.setDescricao(descricao);
+			lanc.setSituacao(StatusSituacao.PENDENTE);
+			lanc.setParcelado(false);
+			lanc.setQuantidadeParcelas(1);
+			lanc.setNumeroParcela(1);
+			lanc.setFormaPagamento(FormaPagamento.BOLETO);
+			lanc.setChavePesquisa(chavePesquisa);
+			lanc.setNumeroDocBoleto(boletos2.getNumeroDocumento());
+			
+			lancamentoList.add(lanc);
+		}
+		
+		if(!salvo) {
+			lancamentosRepository.saveAll(lancamentoList);
+			salvo = true;
+		}
+		
+		return salvo;
+		
+	}
+	
 	
 	private Lancamentos buscaPorId(Long codigo) {
 		
 		Lancamentos lancSalvo = lancamentosRepository.findById(codigo).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return lancSalvo;
+	}
+	
+	
+	private String gerarChavePesquisa() {
+		
+		String chavePesquisa = FuncoesUtils.gerarHash();
+		List<Lancamentos> verificaLanc = lancamentosRepository.buscarPorchave(chavePesquisa);
+		
+		while(!verificaLanc.isEmpty()) {
+			 
+			 chavePesquisa = FuncoesUtils.gerarHash();
+			 verificaLanc = lancamentosRepository.buscarPorchave(chavePesquisa);
+		 }		
+		return chavePesquisa;
 	}
 	
 

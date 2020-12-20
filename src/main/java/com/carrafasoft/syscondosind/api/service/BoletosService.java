@@ -3,6 +3,8 @@ package com.carrafasoft.syscondosind.api.service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,8 +20,10 @@ import com.carrafasoft.syscondosind.api.enums.BancoEnum;
 import com.carrafasoft.syscondosind.api.event.RecursoCriadoEvent;
 import com.carrafasoft.syscondosind.api.model.Boletos;
 import com.carrafasoft.syscondosind.api.model.ConfigBoletos;
+import com.carrafasoft.syscondosind.api.model.Lancamentos;
 import com.carrafasoft.syscondosind.api.model.ModeloBoletos;
 import com.carrafasoft.syscondosind.api.repository.BoletosRepository;
+import com.carrafasoft.syscondosind.api.utils.FuncoesUtils;
 
 import br.com.caelum.stella.boleto.Banco;
 import br.com.caelum.stella.boleto.Beneficiario;
@@ -47,6 +51,9 @@ public class BoletosService {
 	
 	@Autowired
 	private ModeloBoletoService modeloBoletoService;
+	
+	@Autowired
+	private LancamentosService lancamentosService;
 	
 	
 	public ResponseEntity<Boletos> cadastrarBoleto(Boletos boleto, HttpServletResponse response) {
@@ -252,6 +259,55 @@ public class BoletosService {
         return gerador;
 	}
 
+	
+	
+	/**
+	 * @return *************************************************************************************************************************************************/
+	
+	public ResponseEntity<List<Boletos>> gerarLancamentosAReceber(String dataIni, String dataFim, String categoriaId, String centroCustoId, String descricao) {
+		
+		ResponseEntity<List<Boletos>> httpstatus = new ResponseEntity<List<Boletos>>(HttpStatus.NO_CONTENT);
+		
+		List<Boletos> boletosList = boletosRepository.listarBoletosSemLancamentoPorData(
+				FuncoesUtils.converterStringParaLocalDate(dataIni), 
+				FuncoesUtils.converterStringParaLocalDate(dataFim)
+				);
+		List<Boletos> boletoSalvo = new ArrayList<Boletos>();
+		
+		if(!boletosList.isEmpty()) {
+
+			Long categoriaId2 = Long.parseLong(categoriaId);
+			Long centroCustoId2 = Long.parseLong(centroCustoId);
+			
+			Boolean salvo = lancamentosService.gerarLancamentoAReceberDosBoletos(boletosList, centroCustoId2, categoriaId2, descricao);
+			
+			if(salvo) {
+
+				for (Boletos boletos : boletosList) {
+					
+					boletoSalvo.add(atualizarStatusLancGerado(boletos.getBoletoId(), true));
+				}
+			}
+			httpstatus = ResponseEntity.ok(boletoSalvo);
+		}
+		
+		
+		
+		return httpstatus;
+	}
+	
+	/**
+	 * @return *************************************************************************************************************************************************/
+	
+	private Boletos atualizarStatusLancGerado(Long codigo, Boolean ativo) {
+		
+		Boletos boletoSalvo = buscaPorId(codigo);
+		
+		boletoSalvo.setLancamentoGerado(ativo);
+		
+		boletosRepository.save(boletoSalvo);
+		return boletoSalvo;
+	}
 	
 	
 	/***************************************************************************************************************************************************/

@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 import com.carrafasoft.syscondosind.api.enums.SituacaoBoleto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -51,6 +52,9 @@ public class Boletos {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "situacao_boleto")
 	private SituacaoBoleto situacaoBoleto;
+
+	@Column(name = "lancamento_gerado")
+	private Boolean lancamentoGerado;
 
 	@NotNull
 	@JsonIgnoreProperties("enderecoCondominio")
@@ -157,6 +161,14 @@ public class Boletos {
 		this.morador = morador;
 	}
 
+	public Boolean getLancamentoGerado() {
+		return lancamentoGerado;
+	}
+
+	public void setLancamentoGerado(Boolean lancamentoGerado) {
+		this.lancamentoGerado = lancamentoGerado;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -188,6 +200,7 @@ public class Boletos {
 		dataDocumento = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
 		dataProcessamento = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
 		situacaoBoleto = SituacaoBoleto.EM_ABERTO;
+		lancamentoGerado = false;
 	}
 
 }

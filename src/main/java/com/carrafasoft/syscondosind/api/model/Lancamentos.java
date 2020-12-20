@@ -72,6 +72,9 @@ public class Lancamentos {
 	@Enumerated(EnumType.STRING)
 	private FormaPagamento formaPagamento;
 
+	@Column(name = "numero_doc_boleto")
+	private Long numeroDocBoleto;
+
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "conta_bancaria_id")
@@ -199,10 +202,12 @@ public class Lancamentos {
 		this.categoriaConta = categoriaConta;
 	}
 
-	@PrePersist
-	public void aoCadastrar() {
+	public Long getNumeroDocBoleto() {
+		return numeroDocBoleto;
+	}
 
-		situacao = StatusSituacao.PENDENTE;
+	public void setNumeroDocBoleto(Long numeroDocBoleto) {
+		this.numeroDocBoleto = numeroDocBoleto;
 	}
 
 	public String getChavePesquisa() {
@@ -212,8 +217,6 @@ public class Lancamentos {
 	public void setChavePesquisa(String chavePesquisa) {
 		this.chavePesquisa = chavePesquisa;
 	}
-	
-	
 
 	@Override
 	public int hashCode() {
@@ -238,6 +241,12 @@ public class Lancamentos {
 		} else if (!lancamentoId.equals(other.lancamentoId))
 			return false;
 		return true;
+	}
+	
+	@PrePersist
+	public void aoCadastrar() {
+
+		situacao = StatusSituacao.PENDENTE;
 	}
 
 }

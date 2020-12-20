@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.carrafasoft.syscondosind.api.event.RecursoCriadoEvent;
 import com.carrafasoft.syscondosind.api.model.Boletos;
 import com.carrafasoft.syscondosind.api.repository.BoletosRepository;
 import com.carrafasoft.syscondosind.api.service.BoletosService;
+import com.carrafasoft.syscondosind.api.utils.FuncoesUtils;
 
 import br.com.caelum.stella.boleto.transformer.GeradorDeBoletoHTML;
 
@@ -79,6 +81,21 @@ public class BoletoResource {
 		
 		
 		return boleto;
+	}
+	
+	@GetMapping("/listar-boletos-sem-lancamentos")
+	public List<Boletos> listarTodosBoletosSemLancamentoGerado() {
+		
+		return boletosRepository.listarTodosBoletosSemLancamentoGerado();
+	}
+	
+	@GetMapping("/listar-boletos-sem-lancamentos-por-data")
+	public List<Boletos> listarBoletosSemLancamentoGeradoPorData(@RequestParam("dataIni") String dataIni, @RequestParam("dataFim") String dataFim) {
+		
+		return boletosRepository.listarBoletosSemLancamentoPorData(
+				FuncoesUtils.converterStringParaLocalDate(dataIni), 
+				FuncoesUtils.converterStringParaLocalDate(dataFim)
+				);
 	}
 
 }

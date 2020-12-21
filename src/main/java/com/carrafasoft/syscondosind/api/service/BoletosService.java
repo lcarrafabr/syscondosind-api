@@ -312,7 +312,8 @@ public class BoletosService {
 	 * @param condominioId 
 	 * @param modeloBoletoId 
 	 * @param dataVencimento 
-	 * @return **/
+	 * @return ,
+	 * **/
 	
 	
 	public ResponseEntity<Boletos> gerarMensalidadeCondominio(String valorParcelaTotal, String dataVencimento, String modeloBoletoId, String condominioId, HttpServletResponse response) {
@@ -329,7 +330,7 @@ public class BoletosService {
 		
 		List<Moradores> moradorList = moradorRepository.listarMoradoresParaGerarBoleto();
 		
-		List<Boletos> boletosCadastrados = new ArrayList<Boletos>();
+		//List<Boletos> boletosCadastrados = new ArrayList<Boletos>();
 		
 		LocalDate dataVenc = FuncoesUtils.converterStringParaLocalDate(dataVencimento);
 		ResponseEntity<Boletos> boletoSalvo = new ResponseEntity<Boletos>(HttpStatus.CREATED);
@@ -338,8 +339,7 @@ public class BoletosService {
 		for (int i = 0; i < moradorList.size(); i++) {
 			
 			Boletos boleto = new Boletos();
-			
-			
+						
 			boleto.setDataVencimento(dataVenc);
 			boleto.setValor(mensalidade);
 			boleto.setCondominio(condominioSalvo);

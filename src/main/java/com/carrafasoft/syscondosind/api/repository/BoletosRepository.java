@@ -21,7 +21,7 @@ public interface BoletosRepository extends JpaRepository<Boletos, Long>{
 	@Query(nativeQuery = true,
 			value = "select * from boletos "
 					+ "where lancamento_gerado <> 1 "
-					+ "and data_documento between :dataIni and :dataFim ")
+					+ "and data_vencimento between :dataIni and :dataFim ")
 	List<Boletos> listarBoletosSemLancamentoPorData(LocalDate dataIni, LocalDate dataFim);
 	
 	

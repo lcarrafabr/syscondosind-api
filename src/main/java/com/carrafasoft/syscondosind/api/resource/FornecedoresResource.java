@@ -48,8 +48,8 @@ public class FornecedoresResource {
 	@PostMapping
 	public ResponseEntity<Fornecedores> cadastrarFornecedor(@Valid @RequestBody Fornecedores fornecedor, HttpServletResponse response) {
 		
-		Fornecedores fornecedorSalvo = fornecedorRepository.save(fornecedor);
-		publisher.publishEvent(new RecursoCriadoEvent(this, response, fornecedorSalvo.getFornecedorId()));
+		
+		Fornecedores fornecedorSalvo = fornecedorService.cadastrarFornecedores(fornecedor, response);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(fornecedorSalvo);
 	}
@@ -63,6 +63,7 @@ public class FornecedoresResource {
 	}
 	
 	@DeleteMapping("/{codigo}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void removerFornecedor(@PathVariable Long codigo) {
 		
 		fornecedorRepository.deleteById(codigo);

@@ -36,6 +36,9 @@ public class Fornecedores {
 	@NotNull
 	private Boolean status;
 
+	@Column(name = "nome_contato", length = 200)
+	private String nomeContato;
+
 	@Column(columnDefinition = "TEXT")
 	private String descricao;
 
@@ -45,7 +48,7 @@ public class Fornecedores {
 	@JoinColumn(name = "pessoa_id")
 	private Pessoas pessoa;
 
-	@NotNull
+
 	@JsonIgnoreProperties("enderecoCondominio")
 	@ManyToOne
 	@JoinColumn(name = "condominio_id")
@@ -105,6 +108,14 @@ public class Fornecedores {
 
 	public String getDescricao() {
 		return descricao;
+	}
+
+	public String getNomeContato() {
+		return nomeContato;
+	}
+
+	public void setNomeContato(String nomeContato) {
+		this.nomeContato = nomeContato;
 	}
 
 	public void setDescricao(String descricao) {
@@ -190,6 +201,10 @@ public class Fornecedores {
 		if (razaoSocial != null && !razaoSocial.isEmpty()) {
 
 			razaoSocial = razaoSocial.trim().toUpperCase();
+		}
+
+		if (nomeContato != null && !nomeContato.isEmpty()) {
+			nomeContato = nomeContato.trim().toUpperCase();
 		}
 	}
 

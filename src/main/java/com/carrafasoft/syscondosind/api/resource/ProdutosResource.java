@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.carrafasoft.syscondosind.api.event.RecursoCriadoEvent;
@@ -42,6 +43,7 @@ public class ProdutosResource {
 	@GetMapping
 	public List<Produtos> listarTodos() {
 		return produtoRepository.findAll();
+		//return produtoRepository.listarProdutosComCalculoDeItensPorPreco();
 	}
 	
 	@PostMapping
@@ -62,13 +64,14 @@ public class ProdutosResource {
 	}
 	
 	@DeleteMapping("/{codigo}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void removerProduto(@PathVariable Long codigo) {
 		
 		produtoRepository.deleteById(codigo);
 	}
 	
 	@PutMapping("/{codigo}")
-	public ResponseEntity<Produtos> atualizarProduto(@PathVariable Long codigo, Produtos produto) {
+	public ResponseEntity<Produtos> atualizarProduto(@PathVariable Long codigo,@Valid @RequestBody Produtos produto) {
 		
 		Produtos produtoSalvo = produtoService.atualizarProduto(codigo, produto);
 		

@@ -14,10 +14,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Entity
 @Table(name = "produtos")
@@ -56,8 +58,8 @@ public class Produtos {
 	private Boolean avisarVencimento;
 
 	@NotNull
-	@Column(name = "codigo_de_barras")
-	private Integer codigoDeBarras;
+	@Column(name = "codigo_de_barras", length = 30)
+	private String codigoDeBarras;
 
 	@Column(name = "data_de_compra")
 	private LocalDate dataCompra;
@@ -69,7 +71,7 @@ public class Produtos {
 	private Condominios condominio;
 
 	@NotNull
-	@JsonIgnoreProperties("{condominio, pessoa, endereco, categoriaFornecedor}")
+	@JsonIgnoreProperties({ "condominio", "pessoa", "endereco", "categoriaFornecedor" })
 	@ManyToOne
 	@JoinColumn(name = "fornecedor_id")
 	private Fornecedores fornecedor;
@@ -79,6 +81,9 @@ public class Produtos {
 	@ManyToOne
 	@JoinColumn(name = "unidade_de_medida_id")
 	private UnidadeDeMedidas unidadeMedida;
+
+	@Transient
+	private BigDecimal valorTotal;
 
 	public Long getProdutoId() {
 		return produtoId;
@@ -144,11 +149,11 @@ public class Produtos {
 		this.avisarVencimento = avisarVencimento;
 	}
 
-	public Integer getCodigoDeBarras() {
+	public String getCodigoDeBarras() {
 		return codigoDeBarras;
 	}
 
-	public void setCodigoDeBarras(Integer codigoDeBarras) {
+	public void setCodigoDeBarras(String codigoDeBarras) {
 		this.codigoDeBarras = codigoDeBarras;
 	}
 
@@ -182,6 +187,14 @@ public class Produtos {
 
 	public void setUnidadeMedida(UnidadeDeMedidas unidadeMedida) {
 		this.unidadeMedida = unidadeMedida;
+	}
+
+	public BigDecimal getValorTotal() {
+		return valorTotal;
+	}
+
+	public void setValorTotal(BigDecimal valorTotal) {
+		this.valorTotal = valorTotal;
 	}
 
 	@Override

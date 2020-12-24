@@ -1,5 +1,6 @@
 package com.carrafasoft.syscondosind.api.utils;
 
+import java.sql.Date;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -66,8 +67,18 @@ public class FuncoesUtils {
 	      codigoRetorno = formatoCodigo.format(codigo);
 
 	      return codigoRetorno;
-
-
 	  }
+	
+	
+	/**
+	 * Converte SQL DATE em LocalDate
+	 * @param Date data - sql date
+	 * 
+	 * **/
+	public static LocalDate converteSQLDateToLocalDate(Date data) {
+		
+		LocalDate dataConvertida = data.toLocalDate();
+		return dataConvertida;
+	}
 
 }

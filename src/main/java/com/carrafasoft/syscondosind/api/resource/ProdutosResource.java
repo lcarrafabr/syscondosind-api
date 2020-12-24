@@ -1,5 +1,7 @@
 package com.carrafasoft.syscondosind.api.resource;
 
+import java.math.BigInteger;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.carrafasoft.syscondosind.api.event.RecursoCriadoEvent;
 import com.carrafasoft.syscondosind.api.model.Produtos;
+import com.carrafasoft.syscondosind.api.model.apoio.ControleEstoqueModelApoio;
 import com.carrafasoft.syscondosind.api.repository.ProdutoRepository;
 import com.carrafasoft.syscondosind.api.service.ProdutoService;
 
@@ -76,5 +79,14 @@ public class ProdutosResource {
 		Produtos produtoSalvo = produtoService.atualizarProduto(codigo, produto);
 		
 		return ResponseEntity.ok(produtoSalvo);
+	}
+	
+	
+	@GetMapping("/controle-estoque")
+	public List<ControleEstoqueModelApoio> teste() {
+		
+		List<ControleEstoqueModelApoio> controleEstoque = produtoService.controleEstoque();
+		
+		return controleEstoque;
 	}
 }

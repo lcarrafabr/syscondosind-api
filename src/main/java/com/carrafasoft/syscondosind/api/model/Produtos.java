@@ -19,7 +19,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Entity
 @Table(name = "produtos")
@@ -83,7 +82,7 @@ public class Produtos {
 	private UnidadeDeMedidas unidadeMedida;
 
 	@Transient
-	private BigDecimal valorTotal;
+	private String valorTotal;
 
 	public Long getProdutoId() {
 		return produtoId;
@@ -189,11 +188,11 @@ public class Produtos {
 		this.unidadeMedida = unidadeMedida;
 	}
 
-	public BigDecimal getValorTotal() {
+	public String getValorTotal() {
 		return valorTotal;
 	}
 
-	public void setValorTotal(BigDecimal valorTotal) {
+	public void setValorTotal(String valorTotal) {
 		this.valorTotal = valorTotal;
 	}
 

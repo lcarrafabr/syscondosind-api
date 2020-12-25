@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.carrafasoft.syscondosind.api.model.Produtos;
-import com.carrafasoft.syscondosind.api.model.apoio.ControleEstoqueModelApoio;
 
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produtos, Long>{
@@ -36,5 +35,11 @@ public interface ProdutoRepository extends JpaRepository<Produtos, Long>{
 					+ "left join retirada_de_produtos r on p.produto_id = r.produto_id "
 					+ "group by p.produto_id ")
 	List<Object[]> controleEstoque();
+	
+	
+	@Query(nativeQuery = true,
+			value = "select * from produtos "
+					+ "where codigo_de_barras = :codigoDeBarras ")
+	List<Produtos> findByCodigoDeBarras(String codigoDeBarras);
 
 }

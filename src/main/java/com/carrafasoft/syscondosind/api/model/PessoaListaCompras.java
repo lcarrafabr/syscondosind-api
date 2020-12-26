@@ -14,6 +14,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.carrafasoft.syscondosind.api.model.interfaces.SolicitacaoCompraInterface;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity

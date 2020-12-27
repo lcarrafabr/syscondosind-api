@@ -5,7 +5,8 @@ public enum StatusSolicitacaoCOmpraEnum {
 	EM_CRIACAO,
 	ABERTO,
 	EM_ANALISE,
-	CONCLUIDO,
+	APROVADO,
+	NAO_APROVADO,
 	CANCELADO
 
 }
